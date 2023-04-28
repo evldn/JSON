@@ -72,5 +72,9 @@ namespace JSONLib
 		std::string getKey() { return key; }
 		std::string getValue() { return value; }
 		IterIValue* iterator() { return new IterListValue(head); }
+		void addFirst(IValue* val);
+		void addLast(IValue* val);
+		void deleteFirst();
+		void deleteLast();
 	};
 }
