@@ -36,22 +36,22 @@ namespace JSONLib {
 	}
 	void ListValueNet::addFirst(IValueNet^ _val)
 	{
-		if (_val->getType() == 1) {
+		if (_val->getType() == Val) {
 			IValue* val = new Value(static_cast<ValueNet^>(_val)->getVal());
 			listval->addFirst(val);
 		}
-		if (_val->getType() == 2) {
+		if (_val->getType() == ListVal) {
 			IValue* val = new ListValue(static_cast<ListValueNet^>(_val)->getList());
 			listval->addFirst(val);
 		}
 	}
 	void ListValueNet::addLast(IValueNet^ _val)
 	{
-		if (_val->getType() == 1) {
+		if (_val->getType() == Val) {
 			IValue* val = new Value(static_cast<ValueNet^>(_val)->getVal());
 			listval->addLast(val);
 		}
-		if (_val->getType() == 2) {
+		if (_val->getType() == ListVal) {
 			IValue* val = new ListValue(static_cast<ListValueNet^>(_val)->getList());
 			listval->addLast(val);
 		}

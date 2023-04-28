@@ -30,9 +30,10 @@ namespace JSONLib
 	class IterIValue {
 	public:
 		virtual bool hasNext() = 0;
-		virtual IValue* Next() = 0;
+		virtual void Next() = 0;
 		virtual bool hasPrev() = 0;
-		virtual IValue* Prev() = 0;
+		virtual void Prev() = 0;
+		virtual IValue* getTemp() = 0;
 	};
 
 	class IterValue : public IterIValue {
@@ -40,19 +41,22 @@ namespace JSONLib
 	public:
 		IterValue(IValue* _val) : val(_val) { }
 		bool hasNext() { return false; }
-		IValue* Next() { return val; }
+		void Next() { return; }
 		bool hasPrev() { return false; }
-		IValue* Prev() { return val; }
+		void Prev() { return; }
+		IValue* getTemp() { return val; }
 	};
 
 	class IterListValue : public IterIValue {
 		Link* temp;
+		Link* tail;
 	public:
-		IterListValue(Link* head) : temp(head) { }
-		bool hasNext() { return temp != nullptr; }
-		IValue* Next();
-		bool hasPrev() { return temp != nullptr; }
-		IValue* Prev();
+		IterListValue(Link* head, Link* _tail) : temp(head), tail(_tail) { }
+		bool hasNext() { return temp->next != nullptr; }
+		void Next();
+		bool hasPrev() { return temp->prev != nullptr; }
+		void Prev();
+		IValue* getTemp();
 	};
 
 	class Value :public IValue {
@@ -79,7 +83,8 @@ namespace JSONLib
 		TypeValue getType() { return ListVal; }
 		std::string getKey() { return key; }
 		std::string getValue() { return value; }
-		IterIValue* iterator() { return new IterListValue(head); }
+		IterIValue* iterator() { return new IterListValue(head, tail); }
+		bool contain(std::string key);
 		void addFirst(IValue* val);
 		void addLast(IValue* val);
 		void addOnKey(std::string key, IValue* val);

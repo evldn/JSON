@@ -23,6 +23,7 @@ namespace JSONLib {
 		void del();
 		void SetObserver(IObserver^ o);
 		void back();
+		void up();
 		System::String^ getJsonString() {return gcnew System::String(json->getJSONString().c_str()); }
 	};
 }

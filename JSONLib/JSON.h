@@ -13,7 +13,7 @@ namespace JSONLib
 		bool inobj = false;
 		IValue* current;
 	public:
-		JSON() : root(new ListValue("root", "")), jsonitr(root->iterator()), current(jsonitr->Next()) { }
+		JSON();
 		~JSON() { delete root; }
 		void next();
 		void down();
@@ -22,6 +22,7 @@ namespace JSONLib
 		void deleteFirst();
 		void del();
 		void back();
+		void up();
 		IValue* getCurrent() { return current; }
 		std::string getJSONString();
 	};

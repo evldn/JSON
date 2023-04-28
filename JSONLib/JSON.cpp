@@ -2,20 +2,28 @@
 
 namespace JSONLib 
 {
-	void JSON::next() 
+	JSON::JSON()
+	{
+		root = new ListValue("root", "");
+		jsonitr = root->iterator();
+		current = nullptr;
+	}
+	void JSON::next()
 	{
 		if (!inobj)
 		{
 			if (jsonitr->hasNext())
 			{
-				current = jsonitr->Next();
+				jsonitr->Next();
+				current = jsonitr->getTemp();
 			}
 		}
 		else
 		{
 			if (jsonitrin->hasNext())
 			{
-				current = jsonitrin->Next();
+				jsonitrin->Next();
+				current = jsonitrin->getTemp();
 			}
 		}
 	}
@@ -25,33 +33,46 @@ namespace JSONLib
 		{
 			inobj = true;
 			jsonitrin = current->iterator();
-			current = jsonitrin->Next();
+			current = jsonitrin->getTemp();
 		}
 	}
+
+	void JSON::up()
+	{
+		if (inobj)
+		{
+			current = jsonitr->getTemp();
+			delete jsonitrin;
+			inobj = false;
+		}
+	}
+
 	void JSON::addFirst(IValue* val)
 	{
-		root->addFirst(val);
-		current = val;
+		if (!root->contain(val->getKey()))
+		{
+			root->addFirst(val);
+			jsonitr = root->iterator();
+			current = jsonitr->getTemp();
+		}
 	}
 	void JSON::add(IValue* val)
 	{
 		root->addOnKey(current->getKey(), val);
+		jsonitr = root->iterator();
+		current = jsonitr->getTemp();
 	}
 	void JSON::deleteFirst()
 	{
 		root->deleteFirst();
 		jsonitr = root->iterator();
-		current = jsonitr->Next();
+		current = jsonitr->getTemp();
 	}
 	void JSON::del()
 	{
-		if (current == root)
-		{
-			deleteFirst();
-			return;
-		}
 		root->delOnKey(current->getKey());
-
+		jsonitr = root->iterator();
+		current = jsonitr->getTemp();
 	}
 	void JSON::back()
 	{
@@ -59,14 +80,16 @@ namespace JSONLib
 		{
 			if (jsonitr->hasPrev())
 			{
-				current = jsonitr->Prev();
+				jsonitr->Prev();
+				current = jsonitr->getTemp();
 			}
 		}
 		else
 		{
 			if (jsonitrin->hasPrev())
 			{
-				current = jsonitrin->Prev();
+				jsonitrin->Prev();
+				current = jsonitrin->getTemp();
 			}
 		}
 	}
@@ -77,35 +100,35 @@ namespace JSONLib
 		std::string s = "";
 		while (itr->hasNext())
 		{
-			IValue* current = itr->Next();
-			switch (current->getType())
+			IValue* curr = itr->getTemp();
+			switch (curr->getType())
 			{
-			case 1:
+			case Val:
 			{
-				if (current->getKey() == getCurrent()->getKey())
+				if (curr->getKey() == getCurrent()->getKey())
 				{
-					s += "*" + current->getKey() + " : " + current->getValue() + "\n";
+					s += "*" + curr->getKey() + " : " + curr->getValue() + "\n";
 				}
 				else
 				{
-					s += current->getKey() + " : " + current->getValue() + "\n";
+					s += curr->getKey() + " : " + curr->getValue() + "\n";
 				}
 				break;
 			}
-			case 2:
+			case ListVal:
 			{
-				IterIValue* iter = current->iterator();
-				if (current->getKey() == getCurrent()->getKey())
+				IterIValue* iter = curr->iterator();
+				if (curr->getKey() == getCurrent()->getKey())
 				{
-					s += "*" + current->getKey() + " : " + "\n";
+					s += "*" + curr->getKey() + " : " + "\n";
 				}
 				else
 				{
-					s += current->getKey() + " : " + "\n";
+					s += curr->getKey() + " : " + "\n";
 				}
 				while (iter->hasNext())
 				{
-					IValue* current_2 = iter->Next();
+					IValue* current_2 = iter->getTemp();
 					if (current_2->getKey() == getCurrent()->getKey())
 					{
 						s += "    *" + current_2->getKey() + " : " + current_2->getValue() + "\n";
@@ -114,10 +137,72 @@ namespace JSONLib
 					{
 						s += "    " + current_2->getKey() + " : " + current_2->getValue() + "\n";
 					}
+					iter->Next();
+				}
+				IValue* current_2 = iter->getTemp();
+				if (current_2->getKey() == getCurrent()->getKey())
+				{
+					s += "    *" + current_2->getKey() + " : " + current_2->getValue() + "\n";
+				}
+				else
+				{
+					s += "    " + current_2->getKey() + " : " + current_2->getValue() + "\n";
 				}
 				break;
 			}
 			}
+			itr->Next();
+		}
+		IValue* curr = itr->getTemp();
+		switch (curr->getType())
+		{
+		case Val:
+		{
+			if (curr->getKey() == getCurrent()->getKey())
+			{
+				s += "*" + curr->getKey() + " : " + curr->getValue() + "\n";
+			}
+			else
+			{
+				s += curr->getKey() + " : " + curr->getValue() + "\n";
+			}
+			break;
+		}
+		case ListVal:
+		{
+			IterIValue* iter = curr->iterator();
+			if (curr->getKey() == getCurrent()->getKey())
+			{
+				s += "*" + curr->getKey() + " : " + "\n";
+			}
+			else
+			{
+				s += curr->getKey() + " : " + "\n";
+			}
+			while (iter->hasNext())
+			{
+				IValue* current_2 = iter->getTemp();
+				if (current_2->getKey() == getCurrent()->getKey())
+				{
+					s += "    *" + current_2->getKey() + " : " + current_2->getValue() + "\n";
+				}
+				else
+				{
+					s += "    " + current_2->getKey() + " : " + current_2->getValue() + "\n";
+				}
+				iter->Next();
+			}
+			IValue* current_2 = iter->getTemp();
+			if (current_2->getKey() == getCurrent()->getKey())
+			{
+				s += "    *" + current_2->getKey() + " : " + current_2->getValue() + "\n";
+			}
+			else
+			{
+				s += "    " + current_2->getKey() + " : " + current_2->getValue() + "\n";
+			}
+			break;
+		}
 		}
 		return s;
 	}

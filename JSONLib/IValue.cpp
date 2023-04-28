@@ -1,20 +1,19 @@
 #include "IValue.h"
 
 namespace JSONLib {
-	IValue* IterListValue::Next()
+	void IterListValue::Next()
 	{
-		if (!hasNext()) throw - 1;
-		IValue* val = temp->val;
 		temp = temp->next;
-		return val;
 	}
 
-	IValue* IterListValue::Prev()
+	void IterListValue::Prev()
 	{
-		if (!hasPrev()) throw - 1;
-		IValue* val = temp->val;
 		temp = temp->prev;
-		return val;
+	}
+
+	IValue* IterListValue::getTemp()
+	{
+		return temp->val;
 	}
 	
 
@@ -38,6 +37,15 @@ namespace JSONLib {
 			deleteFirst();
 	}
 
+	bool ListValue::contain(std::string key) {
+		for (Link* current = head; current != nullptr; current = current->next) {
+			if (current->val->getKey() == key) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void ListValue::addFirst(IValue* val)
 	{
 		Link* link = new Link(val);
@@ -58,6 +66,7 @@ namespace JSONLib {
 			head = link;
 		tail = link;
 	}
+
 	void ListValue::addOnKey(std::string key, IValue* val)
 	{
 		IValue* temp;
@@ -72,13 +81,25 @@ namespace JSONLib {
 					ListValue* newlist = new ListValue(temp->getKey(), "");
 					newlist->addFirst(temp);
 					newlist->addFirst(val);
-					Link* tmp = current;
-					current = new Link(newlist, tmp->next, tmp->prev);
-					delete tmp;
+					current->val = newlist;
+
+					/*Link* right = current;
+					if (right == nullptr)
+						return addLast(newlist);
+					Link* left = right->prev;
+					if (left == nullptr)
+						return addFirst(newlist);
+					Link* tmp = new Link(newlist);
+					tmp->prev = left;
+					tmp->next = right;
+					left->next = tmp;
+					right->prev = tmp;*/
+					break;
 				}
 				else if (temp->getType() == ListVal)
 				{
 					static_cast<ListValue*>(temp)->addFirst(val);
+					break;
 				}
 			}
 			current = current->next;
@@ -87,23 +108,40 @@ namespace JSONLib {
 
 	void ListValue::delOnKey(std::string key)
 	{
-		IValue* temp;
 		Link* current = head;
 		while (current != nullptr)
 		{
-			temp = current->val;
-			if (temp->getKey() == key)
+			if (current->val->getKey() == key)
 			{
 				Link* tmp = current;
+				if (tmp == nullptr)
+					return;
+				if (tmp->prev == nullptr)
+				{
+					deleteFirst();
+					return;
+				}
+				if (tmp->next == nullptr)
+				{
+					deleteLast();
+					return;
+				}
+				Link* left = tmp->prev;
+				Link* right = tmp->next;
+				left->next = right;
+				right->prev = left;
+				delete tmp;
+				/*Link* tmp = current;
 				current->next->prev = current->prev;
 				current->prev->next = current->next;
 				if (current->next->next != nullptr)
 					current = current->next;
 				else if (current->prev != nullptr)
 					current = current->prev;
-				delete tmp;
+				delete tmp;*/
+				break;
 			}
-
+			current = current->next;
 		}
 	}
 
