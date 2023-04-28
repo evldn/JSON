@@ -16,6 +16,21 @@ namespace JSONLib {
 		temp = temp->prev;
 		return val;
 	}
+	
+
+	ListValue::ListValue(ListValue* list)
+	{
+		key = list->key;
+		value = list->value;
+		head = nullptr;
+		tail = nullptr;
+		Link* current = list->head;
+		while (current != nullptr)
+		{
+			addLast(current->val);
+			current = current->next;
+		}
+	}
 
 	ListValue::~ListValue()
 	{
@@ -115,5 +130,10 @@ namespace JSONLib {
 			head = nullptr;
 		delete tail;
 		tail = link;
+	}
+	Value::Value(Value* value)
+	{
+		key = value->key;
+		val = value->val;
 	}
 }

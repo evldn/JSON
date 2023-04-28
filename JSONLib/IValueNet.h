@@ -22,7 +22,7 @@ namespace JSONLib {
 		Value* val;
 	public:
 		ValueNet(System::String^ _key, System::String^ _val);
-		TypeValue getType() override;
+		TypeValue getType() override { return val->getType(); }
 		System::String^ getKey() override;
 		System::String^ getValue() override;
 		Value* getVal() { return val; }
@@ -33,7 +33,7 @@ namespace JSONLib {
 	public:
 		ListValueNet(System::String^ _key, System::String^ _value);
 		~ListValueNet();
-		TypeValue getType() override;
+		TypeValue getType() override { return listval->getType(); }
 		System::String^ getKey() override;
 		System::String^ getValue() override;
 		ListValue* getList() { return listval; }

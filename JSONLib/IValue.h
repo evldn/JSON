@@ -60,6 +60,7 @@ namespace JSONLib
 		std::string val;
 	public:
 		Value(std::string _key, std::string _val) : key(_key), val(_val) { }
+		Value(Value* val);
 		TypeValue getType() { return Val; }
 		std::string getKey() { return key; }
 		std::string getValue() { return val; }
@@ -73,6 +74,7 @@ namespace JSONLib
 		Link* tail;
 	public:
 		ListValue(std::string _key, std::string _value) : key(_key), value(_value), head(nullptr), tail(nullptr) { }
+		ListValue(ListValue* list);
 		~ListValue();
 		TypeValue getType() { return ListVal; }
 		std::string getKey() { return key; }
