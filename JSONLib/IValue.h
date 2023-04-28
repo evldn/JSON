@@ -24,13 +24,15 @@ namespace JSONLib
 		Link* prev;
 		IValue* val;
 	public:
-		Link(IValue* _val) : next(nullptr), prev(nullptr), val(_val) { }
+		Link(IValue* _val, Link* _next = nullptr, Link* _prev = nullptr) : next(_next), prev(_prev), val(_val) { }
 	};
 
 	class IterIValue {
 	public:
 		virtual bool hasNext() = 0;
 		virtual IValue* Next() = 0;
+		virtual bool hasPrev() = 0;
+		virtual IValue* Prev() = 0;
 	};
 
 	class IterValue : public IterIValue {
@@ -39,6 +41,8 @@ namespace JSONLib
 		IterValue(IValue* _val) : val(_val) { }
 		bool hasNext() { return false; }
 		IValue* Next() { return val; }
+		bool hasPrev() { return false; }
+		IValue* Prev() { return val; }
 	};
 
 	class IterListValue : public IterIValue {
@@ -47,6 +51,8 @@ namespace JSONLib
 		IterListValue(Link* head) : temp(head) { }
 		bool hasNext() { return temp != nullptr; }
 		IValue* Next();
+		bool hasPrev() { return temp != nullptr; }
+		IValue* Prev();
 	};
 
 	class Value :public IValue {
@@ -74,6 +80,8 @@ namespace JSONLib
 		IterIValue* iterator() { return new IterListValue(head); }
 		void addFirst(IValue* val);
 		void addLast(IValue* val);
+		void addOnKey(std::string key, IValue* val);
+		void delOnKey(std::string key);
 		void deleteFirst();
 		void deleteLast();
 	};

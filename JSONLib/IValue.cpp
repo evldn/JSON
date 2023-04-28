@@ -9,6 +9,14 @@ namespace JSONLib {
 		return val;
 	}
 
+	IValue* IterListValue::Prev()
+	{
+		if (!hasPrev()) throw - 1;
+		IValue* val = temp->val;
+		temp = temp->prev;
+		return val;
+	}
+
 	ListValue::~ListValue()
 	{
 		while (head != nullptr)
@@ -35,6 +43,55 @@ namespace JSONLib {
 			head = link;
 		tail = link;
 	}
+	void ListValue::addOnKey(std::string key, IValue* val)
+	{
+		IValue* temp;
+		Link* current = head;
+		while (current != nullptr)
+		{
+			temp = current->val;
+			if (temp->getKey() == key)
+			{
+				if (temp->getType() == Val)
+				{
+					ListValue* newlist = new ListValue(temp->getKey(), "");
+					newlist->addFirst(temp);
+					newlist->addFirst(val);
+					Link* tmp = current;
+					current = new Link(newlist, tmp->next, tmp->prev);
+					delete tmp;
+				}
+				else if (temp->getType() == ListVal)
+				{
+					static_cast<ListValue*>(temp)->addFirst(val);
+				}
+			}
+			current = current->next;
+		}
+	}
+
+	void ListValue::delOnKey(std::string key)
+	{
+		IValue* temp;
+		Link* current = head;
+		while (current != nullptr)
+		{
+			temp = current->val;
+			if (temp->getKey() == key)
+			{
+				Link* tmp = current;
+				current->next->prev = current->prev;
+				current->prev->next = current->next;
+				if (current->next->next != nullptr)
+					current = current->next;
+				else if (current->prev != nullptr)
+					current = current->prev;
+				delete tmp;
+			}
+
+		}
+	}
+
 	void ListValue::deleteFirst()
 	{
 		if (head == nullptr)

@@ -2,21 +2,27 @@
 #include <string>
 #include <iostream>
 #include "IValue.h"
+#include <stack>
 
 namespace JSONLib 
 {
-	class JSon {
+	class JSON {
 		ListValue* root;
+		IterIValue* jsonitr;
+		IterIValue* jsonitrin;
+		bool inobj = false;
+		IValue* current;
 	public:
-		JSon() : root(new ListValue("root", "")) { }
-		~JSon() { delete root; }
+		JSON() : root(new ListValue("root", "")), jsonitr(root->iterator()), current(jsonitr->Next()) { }
+		~JSON() { delete root; }
 		void next();
 		void down();
 		void addFirst(IValue* val);
 		void add(IValue* val);
 		void deleteFirst();
 		void del();
-		ListValue* getRoot() { return root; }
 		void back();
+		IValue* getCurrent() { return current; }
+		std::string getJSONString();
 	};
 }
