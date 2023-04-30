@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace JSONForm
@@ -14,6 +15,7 @@ namespace JSONForm
     public partial class Form1 : Form
     {
         static JSONLib.JSONNet js = new JSONLib.JSONNet();
+        static bool is_load = false;
         public Form1()
         {
             InitializeComponent();
@@ -45,21 +47,21 @@ namespace JSONForm
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            JSONLib.ValueNet val1 = new JSONLib.ValueNet("firstName", "Lazzaro");
-            JSONLib.ValueNet val2 = new JSONLib.ValueNet("lastName", "Raimondi");
-            JSONLib.ListValueNet val3 = new JSONLib.ListValueNet("address", "");
-            JSONLib.ValueNet val31 = new JSONLib.ValueNet("city", "Milan");
-            JSONLib.ValueNet val32 = new JSONLib.ValueNet("street", "San-Siro");
-            JSONLib.ValueNet val4 = new JSONLib.ValueNet("job", "manager");
-            val3.addFirst(val32);
-            val3.addFirst(val31);
-            js.addFirst(val4);
-            js.addFirst(val3);
-            js.addFirst(val2);
-            js.addFirst(val1);
-            ShowJSON sl = new ShowJSON(label1, js);
-            sl.show();
-            js.SetObserver(sl);
+            //JSONLib.ValueNet val1 = new JSONLib.ValueNet("firstName", "Lazzaro");
+            //JSONLib.ValueNet val2 = new JSONLib.ValueNet("lastName", "Raimondi");
+            //JSONLib.ListValueNet val3 = new JSONLib.ListValueNet("address", "");
+            //JSONLib.ValueNet val31 = new JSONLib.ValueNet("city", "Milan");
+            //JSONLib.ValueNet val32 = new JSONLib.ValueNet("street", "San-Siro");
+            //JSONLib.ValueNet val4 = new JSONLib.ValueNet("job", "manager");
+            //val3.addFirst(val32);
+            //val3.addFirst(val31);
+            //js.addFirst(val4);
+            //js.addFirst(val3);
+            //js.addFirst(val2);
+            //js.addFirst(val1);
+            //ShowJSON sl = new ShowJSON(label1, js);
+            //sl.show();
+            //js.SetObserver(sl);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -68,18 +70,21 @@ namespace JSONForm
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string key = textBox1.Text;
-            string value = textBox2.Text;
-            if ((key != "") && (value != ""))
+            if (is_load)
             {
-                try
+                string key = textBox1.Text;
+                string value = textBox2.Text;
+                if ((key != "") && (value != ""))
                 {
-                    JSONLib.ValueNet newvalue = new JSONLib.ValueNet(key, value);
-                    js.addFirst(newvalue);
-                }
-                catch (FormatException ee)
-                {
+                    try
+                    {
+                        JSONLib.ValueNet newvalue = new JSONLib.ValueNet(key, value);
+                        js.addFirst(newvalue);
+                    }
+                    catch (FormatException ee)
+                    {
 
+                    }
                 }
             }
         }
@@ -91,50 +96,79 @@ namespace JSONForm
 
         private void button2_Click(object sender, EventArgs e)
         {
-            js.next();
+            if (is_load)
+                js.next();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            js.down();
+            if (is_load)
+                js.down();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            js.back();
+            if (is_load)
+                js.back();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            string key = textBox1.Text;
-            string value = textBox2.Text;
-            if ((key != "") && (value != ""))
+            if (is_load)
             {
-                try
+                string key = textBox1.Text;
+                string value = textBox2.Text;
+                if ((key != "") && (value != ""))
                 {
-                    JSONLib.ValueNet newvalue = new JSONLib.ValueNet(key, value);
-                    js.add(newvalue);
-                }
-                catch (FormatException ee)
-                {
+                    try
+                    {
+                        JSONLib.ValueNet newvalue = new JSONLib.ValueNet(key, value);
+                        js.add(newvalue);
+                    }
+                    catch (FormatException ee)
+                    {
 
+                    }
                 }
             }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            js.deleteFirst();
+            if (is_load)
+                js.deleteFirst();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            js.del();
+            if (is_load)
+                js.del();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            js.up();
+            if(is_load)
+                js.up();
+        }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //создаем диалог для открытия файла
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Text files | *.TXT | All files (*.*) | *.*";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                js.load(dialog.FileName);
+                ShowJSON sl = new ShowJSON(label1, js);
+                sl.show();
+                js.SetObserver(sl);
+                is_load= true;
+            }
+        }
+
+        private void cохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

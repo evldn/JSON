@@ -80,6 +80,7 @@ namespace JSONLib
 		ListValue(std::string _key, std::string _value) : key(_key), value(_value), head(nullptr), tail(nullptr) { }
 		ListValue(ListValue* list);
 		~ListValue();
+		void Clear();
 		TypeValue getType() { return ListVal; }
 		std::string getKey() { return key; }
 		std::string getValue() { return value; }

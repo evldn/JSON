@@ -74,4 +74,11 @@ namespace JSONLib
 			o->Refresh();
 		}
 	}
+	void JSONNet::load(System::String^ file_name)
+	{
+		json->load(msclr::interop::marshal_as<std::string>(file_name));
+		if (o != nullptr) {
+			o->Refresh();
+		}
+	}
 }

@@ -15,6 +15,7 @@ namespace JSONLib {
 	public:
 		JSONNet() : json(new JSON()) { }
 		~JSONNet() { delete json; }
+		void load(System::String^ file_name);
 		void next();
 		void down();
 		void addFirst(IValueNet^ _val);

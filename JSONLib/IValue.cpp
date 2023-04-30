@@ -33,6 +33,11 @@ namespace JSONLib {
 
 	ListValue::~ListValue()
 	{
+		Clear();
+	}
+
+	void ListValue::Clear()
+	{
 		while (head != nullptr)
 			deleteFirst();
 	}
