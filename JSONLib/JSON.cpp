@@ -246,6 +246,12 @@ namespace JSONLib
 		current = jsonitr->getTemp();
 	}
 
+	void JSON::save(std::string file_name)
+	{
+		std::ofstream f_out(file_name);
+		f_out << getJSONString();
+	}
+
 	void JSON::parse(std::string input, ListValue* obj)
 	{
 		std::string key = "";

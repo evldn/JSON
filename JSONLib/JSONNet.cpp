@@ -81,4 +81,11 @@ namespace JSONLib
 			o->Refresh();
 		}
 	}
+	void JSONNet::save(System::String^ file_name)
+	{
+		json->save(msclr::interop::marshal_as<std::string>(file_name));
+		if (o != nullptr) {
+			o->Refresh();
+		}
+	}
 }

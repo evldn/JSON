@@ -18,6 +18,7 @@ namespace JSONLib
 		JSON();
 		~JSON() { delete root; }
 		void load(std::string file_name);
+		void save(std::string file_name);
 		void parse(std::string input, ListValue* obj);
 		void next();
 		void down();

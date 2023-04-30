@@ -168,6 +168,23 @@ namespace JSONForm
 
         private void cохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "TXT file|*.txt";
+            dialog.Title = "Save an JSON File";
+            dialog.ShowDialog();
+            if (dialog.FileName != "")
+            {
+                js.save(dialog.FileName);
+            }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
 
         }
     }
