@@ -81,14 +81,20 @@ namespace JSONLib
 	void JSON::deleteFirst()
 	{
 		root->deleteFirst();
-		jsonitr = root->iterator();
-		current = jsonitr->getTemp();
+		if (!root->isEmpty())
+		{
+			jsonitr = root->iterator();
+			current = jsonitr->getTemp();
+		}
 	}
 	void JSON::del()
 	{
 		root->delOnKey(current->getKey());
-		jsonitr = root->iterator();
-		current = jsonitr->getTemp();
+		if (!root->isEmpty())
+		{
+			jsonitr = root->iterator();
+			current = jsonitr->getTemp();
+		}
 	}
 	void JSON::back()
 	{
@@ -112,11 +118,69 @@ namespace JSONLib
 
 	std::string JSON::getJSONString()
 	{
-		IterIValue* itr = root->iterator();
-		str = "{\n";
-		std::string colomn = "\"";
-		while (itr->hasNext())
+		if (!root->isEmpty())
 		{
+			IterIValue* itr = root->iterator();
+			str = "{\n";
+			std::string colomn = "\"";
+			while (itr->hasNext())
+			{
+				str += "    ";
+				IValue* curr = itr->getTemp();
+				switch (curr->getType())
+				{
+				case Val:
+				{
+					if (curr->getKey() == getCurrent()->getKey())
+					{
+						str += "*" + colomn + curr->getKey() + colomn + " : " + colomn + curr->getValue() + colomn + "\n";
+					}
+					else
+					{
+						str += colomn + curr->getKey() + colomn + " : " + colomn + curr->getValue() + colomn + "\n";
+					}
+					break;
+				}
+				case ListVal:
+				{
+					IterIValue* iter = curr->iterator();
+					if (curr->getKey() == getCurrent()->getKey())
+					{
+						str += "*" + colomn + curr->getKey() + colomn + " : " + "\n";
+					}
+					else
+					{
+						str += colomn + curr->getKey() + colomn + " : " + "\n";
+					}
+					str += "    {\n";
+					while (iter->hasNext())
+					{
+						IValue* current_2 = iter->getTemp();
+						if (current_2->getKey() == getCurrent()->getKey())
+						{
+							str += "        *" + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
+						}
+						else
+						{
+							str += "        " + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
+						}
+						iter->Next();
+					}
+					IValue* current_2 = iter->getTemp();
+					if (current_2->getKey() == getCurrent()->getKey())
+					{
+						str += "        *" + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
+					}
+					else
+					{
+						str += "        " + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
+					}
+					str += "    }\n";
+					break;
+				}
+				}
+				itr->Next();
+			}
 			str += "    ";
 			IValue* curr = itr->getTemp();
 			switch (curr->getType())
@@ -171,63 +235,9 @@ namespace JSONLib
 				break;
 			}
 			}
-			itr->Next();
+			return str + "}";
 		}
-		str += "    ";
-		IValue* curr = itr->getTemp();
-		switch (curr->getType())
-		{
-		case Val:
-		{
-			if (curr->getKey() == getCurrent()->getKey())
-			{
-				str += "*" + colomn + curr->getKey() + colomn + " : " + colomn + curr->getValue() + colomn + "\n";
-			}
-			else
-			{
-				str += colomn + curr->getKey() + colomn + " : " + colomn + curr->getValue() + colomn + "\n";
-			}
-			break;
-		}
-		case ListVal:
-		{
-			IterIValue* iter = curr->iterator();
-			if (curr->getKey() == getCurrent()->getKey())
-			{
-				str += "*" + colomn + curr->getKey() + colomn + " : " + "\n";
-			}
-			else
-			{
-				str += colomn + curr->getKey() + colomn + " : " + "\n";
-			}
-			str += "    {\n";
-			while (iter->hasNext())
-			{
-				IValue* current_2 = iter->getTemp();
-				if (current_2->getKey() == getCurrent()->getKey())
-				{
-					str += "        *" + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
-				}
-				else
-				{
-					str += "        " + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
-				}
-				iter->Next();
-			}
-			IValue* current_2 = iter->getTemp();
-			if (current_2->getKey() == getCurrent()->getKey())
-			{
-				str += "        *" + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
-			}
-			else
-			{
-				str += "        " + colomn + current_2->getKey() + colomn + " : " + colomn + current_2->getValue() + colomn + "\n";
-			}
-			str += "    }\n";
-			break;
-		}
-		}
-		return str + "}";
+		return "";
 	}
 
 	void JSON::load(std::string file_name)

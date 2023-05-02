@@ -83,7 +83,7 @@ namespace JSONForm
                     }
                     catch (FormatException ee)
                     {
-
+                        Console.WriteLine(ee.Message);
                     }
                 }
             }
@@ -127,7 +127,7 @@ namespace JSONForm
                     }
                     catch (FormatException ee)
                     {
-
+                        Console.WriteLine(ee.Message);
                     }
                 }
             }

@@ -92,5 +92,6 @@ namespace JSONLib
 		void delOnKey(std::string key);
 		void deleteFirst();
 		void deleteLast();
+		bool isEmpty() { return head == nullptr; }
 	};
 }
