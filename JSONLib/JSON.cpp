@@ -11,40 +11,49 @@ namespace JSONLib
 	}
 	void JSON::next()
 	{
-		if (!inobj)
+		if (!root->isEmpty())
 		{
-			if (jsonitr->hasNext())
+			if (!inobj)
 			{
-				jsonitr->Next();
-				current = jsonitr->getTemp();
+				if (jsonitr->hasNext())
+				{
+					jsonitr->Next();
+					current = jsonitr->getTemp();
+				}
 			}
-		}
-		else
-		{
-			if (jsonitrin->hasNext())
+			else
 			{
-				jsonitrin->Next();
-				current = jsonitrin->getTemp();
+				if (jsonitrin->hasNext())
+				{
+					jsonitrin->Next();
+					current = jsonitrin->getTemp();
+				}
 			}
 		}
 	}
 	void JSON::down()
 	{
-		if (current->getType() == ListVal)
+		if (!root->isEmpty())
 		{
-			inobj = true;
-			jsonitrin = current->iterator();
-			current = jsonitrin->getTemp();
+			if (current->getType() == ListVal)
+			{
+				inobj = true;
+				jsonitrin = current->iterator();
+				current = jsonitrin->getTemp();
+			}
 		}
 	}
 
 	void JSON::up()
 	{
-		if (inobj)
+		if (!root->isEmpty())
 		{
-			current = jsonitr->getTemp();
-			delete jsonitrin;
-			inobj = false;
+			if (inobj)
+			{
+				current = jsonitr->getTemp();
+				delete jsonitrin;
+				inobj = false;
+			}
 		}
 	}
 
@@ -76,7 +85,6 @@ namespace JSONLib
 			jsonitr = root->iterator();
 			current = jsonitr->getTemp();
 		}
-		
 	}
 	void JSON::deleteFirst()
 	{
@@ -98,20 +106,23 @@ namespace JSONLib
 	}
 	void JSON::back()
 	{
-		if (!inobj)
+		if (!root->isEmpty())
 		{
-			if (jsonitr->hasPrev())
+			if (!inobj)
 			{
-				jsonitr->Prev();
-				current = jsonitr->getTemp();
+				if (jsonitr->hasPrev())
+				{
+					jsonitr->Prev();
+					current = jsonitr->getTemp();
+				}
 			}
-		}
-		else
-		{
-			if (jsonitrin->hasPrev())
+			else
 			{
-				jsonitrin->Prev();
-				current = jsonitrin->getTemp();
+				if (jsonitrin->hasPrev())
+				{
+					jsonitrin->Prev();
+					current = jsonitrin->getTemp();
+				}
 			}
 		}
 	}
